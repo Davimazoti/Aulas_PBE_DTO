@@ -1,6 +1,6 @@
 package com.example.Aula1_DTO_Escola.Controller;
 
-import com.example.escola.Service.AlunoService;
+import com.example.Aula1_DTO_Escola.Service.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

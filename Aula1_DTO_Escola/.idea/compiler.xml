@@ -9,6 +9,9 @@
         <module name="Aula1_DTO_Escola" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="escola" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
