@@ -1,10 +1,11 @@
 package com.example.Aula1_DTO_Escola.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
 public class Professor {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idProfessor;
@@ -14,13 +15,13 @@ public class Professor {
     @OneToOne(mappedBy = "professor", cascade = CascadeType.ALL)
     private Curso curso;
 
+    public Professor() {
+    }
+
     public Professor(Long idProfessor, String nome, String cpf) {
         this.idProfessor = idProfessor;
         this.nome = nome;
         this.cpf = cpf;
-    }
-
-    public Professor() {
     }
 
     public Long getIdProfessor() {

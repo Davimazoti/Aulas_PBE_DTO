@@ -6,13 +6,13 @@ public class ProfessorDTO {
     private String nome;
     private String cpf;
 
-    public ProfessorDTO() {
+    public ProfessorDTO(){
     }
 
     public ProfessorDTO(String nome, String cpf, Long id) {
+        this.id = id;
         this.nome = nome;
         this.cpf = cpf;
-        this.id = id;
     }
 
     public String getNome() {
