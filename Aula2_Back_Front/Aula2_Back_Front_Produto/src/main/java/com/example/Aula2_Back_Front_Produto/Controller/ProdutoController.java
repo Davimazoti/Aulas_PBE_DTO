@@ -19,12 +19,12 @@ public class ProdutoController {
     @Autowired
     private ProdutoService produtoService;
 
-    @GetMapping
+    @GetMapping("/buscar")
     public ResponseEntity<List<Produto>> getAll(){
         return ResponseEntity.status(HttpStatus.OK).body(produtoService.getAll());
     }
 
-    @PostMapping
+    @PostMapping("/adicionar")
     public ResponseEntity<ProdutoDTO> created(@RequestBody ProdutoDTO produtoDTO){
         ProdutoDTO produto = produtoService.saveDTO(produtoDTO);
         return  ResponseEntity.status(HttpStatus.CREATED).body(produto);
