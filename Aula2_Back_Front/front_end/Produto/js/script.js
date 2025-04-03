@@ -53,7 +53,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para carregar produtos
     async function carregarProdutos() {
         try {
-            const response = await fetch(API_URL + "/buscar");
+            const response = await fetch(API_URL + "/buscar", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
             
             if (!response.ok) {
                 throw new Error('Erro ao carregar produtos');
@@ -66,6 +71,16 @@ document.addEventListener('DOMContentLoaded', function() {
             listaProdutos.innerHTML = '<li>Erro ao carregar produtos</li>';
         }
     }
+
+    async function deletarProduto(produto) {
+            const response = await fetch(API_URL + "/buscar", {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            form.reset;
+        }
 
     // Função para exibir produtos na lista
     function exibirProdutos(produtos) {
@@ -84,7 +99,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 Saldo: ${produto.saldo} - 
                 Mínimo: ${produto.saldoMin}
             `;
+            let btnDeletar= document.createElement("button")
+            btnDeletar.textContent = "Deletar"
+            btnDeletar.onclick= () => {
+                deletarProduto(produto.idProduto);
+            }
             listaProdutos.appendChild(li);
         });
     }
+
 });
