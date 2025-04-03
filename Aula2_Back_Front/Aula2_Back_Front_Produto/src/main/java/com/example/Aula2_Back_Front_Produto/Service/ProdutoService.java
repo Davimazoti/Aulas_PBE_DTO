@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProdutoService {
@@ -43,5 +44,42 @@ public class ProdutoService {
         Produto produto = this.fromDTO(produtoDTO);
         Produto produtoBd = produtoRepository.save(produto);
         return this.toDTO(produtoBd);
+    }
+
+    public Optional<ProdutoDTO> getById(Long id){
+        Optional<Produto> optionalProduto = produtoRepository.findById(id);
+
+        if (optionalProduto.isPresent()) {
+            return Optional.of(this.toDTO(optionalProduto.get()));
+        }else{
+            return Optional.empty();
+        }
+    }
+
+    public Optional<ProdutoDTO> updateProduto(Long id, ProdutoDTO produtoDTO) {
+        Optional<Produto> optionalProduto = produtoRepository.findById(id);
+        if (optionalProduto.isPresent()) {
+            Produto produto = optionalProduto.get();
+            produto.setNome(produtoDTO.getNome());
+            produto.setValor(produtoDTO.getValor());
+            produto.setSaldo(produtoDTO.getSaldo());
+            produto.setSaldoMin(produtoDTO.getSaldoMin());
+
+            Produto produtoUpdate = produtoRepository.save(produto);
+
+            return Optional.of(this.toDTO(produtoUpdate));
+
+        }else{
+            return Optional.empty();
+        }
+    }
+
+    public boolean delete(Long id){
+        if (produtoRepository.existsById(id)){
+            produtoRepository.deleteById(id);
+            return true;
+        }else {
+            return false;
+        }
     }
 }

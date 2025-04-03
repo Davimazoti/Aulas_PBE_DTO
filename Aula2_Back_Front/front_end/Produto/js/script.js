@@ -10,24 +10,12 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
         
-        const produto = {
+        let produto = {
             nome: document.getElementById('nome').value,
             valor: parseFloat(document.getElementById('valor').value),
             saldo: parseInt(document.getElementById('saldo').value),
             saldoMin: parseInt(document.getElementById('saldoMin').value)
         };
-
-        // Validação básica
-        if (produto.saldoMin > produto.saldo) {
-            alert('O saldo mínimo não pode ser maior que o saldo atual!');
-            return;
-        }
-
-        if (produto.valor <= 0) {
-            alert('O valor do produto deve ser positivo!');
-            return;
-        }
-
         await cadastrarProduto(produto);
     });
 
