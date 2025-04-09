@@ -32,7 +32,7 @@ public class ProdutoController {
         return  ResponseEntity.status(HttpStatus.CREATED).body(produto);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/buscar/{id}")
     public ResponseEntity<ProdutoDTO> getById(@PathVariable Long id){
 
         Optional<ProdutoDTO> produtoDTO = produtoService.getById(id);
@@ -53,7 +53,7 @@ public class ProdutoController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deletar/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
         if (produtoService.delete(id)){
             return ResponseEntity.noContent().build();

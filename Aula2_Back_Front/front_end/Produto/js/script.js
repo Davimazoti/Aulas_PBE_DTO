@@ -1,111 +1,106 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    const carregarBtn = document.getElementById('carregarBtn');
-    const listaProdutos = document.getElementById('listaProdutos');
+const API_URL = "http://localhost:8080/produto";
 
-    // URL base da API - altere conforme necessário
-    const API_URL = 'http://localhost:8080/produto';
-
-    // Evento de submit do formulário
-    form.addEventListener('submit', async function(event) {
-        event.preventDefault();
+async function enviarProduto(event) {
+    event.preventDefault(); 
         
-        let produto = {
-            nome: document.getElementById('nome').value,
-            valor: parseFloat(document.getElementById('valor').value),
-            saldo: parseInt(document.getElementById('saldo').value),
-            saldoMin: parseInt(document.getElementById('saldoMin').value)
-        };
-        await cadastrarProduto(produto);
-    });
+    let produto = {
+        nome: document.getElementById('nome').value,
+        valor: parseFloat(document.getElementById('valor').value),
+        saldo: parseInt(document.getElementById('saldo').value),
+        saldoMin: parseInt(document.getElementById('saldoMin').value)
+    };
+     
+    try{
+        let response = await fetch(API_URL + "/adicionar", {
+            method: "POST",
+                headers: { "Content-Type": "application/json"},
 
-    // Evento do botão Carregar Produto
-    carregarBtn.addEventListener('click', async function() {
-        await carregarProdutos();
-    });
-
-    // Função para cadastrar produto
-    async function cadastrarProduto(produto) {
-        console.log(produto)
-        try {
-            const response = await fetch(API_URL + "/adicionar", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 body: JSON.stringify(produto)
-            });
+        });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Erro ao cadastrar produto');
-            }
-
-            form.reset();
-            await carregarProdutos();
-            alert('Produto cadastrado com sucesso!');
-        } catch (error) {
-            console.error('Erro:', error);
-            alert(`Falha ao cadastrar produto: ${error.message}`);
+        if(!response.ok){
+            alert("Erro do back-end"+response.status)
+            return
         }
+
+        let data = await response.json()
+   
+        alert("Sucesso: "+JSON.stringify(data));
+        carregarProdutos();
+        nome.value = "";
+        valor.value = "";
+        saldo.value = "";
+        saldoMin.value = "";
+    } catch (error){
+        alert("Erro na requisição: "+error.message)
     }
+}
 
     // Função para carregar produtos
-    async function carregarProdutos() {
-        try {
-            const response = await fetch(API_URL + "/buscar", {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            
-            if (!response.ok) {
-                throw new Error('Erro ao carregar produtos');
-            }
-
-            const produtos = await response.json();
-            exibirProdutos(produtos);
-        } catch (error) {
-            console.error('Erro:', error);
-            listaProdutos.innerHTML = '<li>Erro ao carregar produtos</li>';
-        }
-    }
-
-    async function deletarProduto(produto) {
-            const response = await fetch(API_URL + "/buscar", {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            form.reset;
-        }
-
-    // Função para exibir produtos na lista
-    function exibirProdutos(produtos) {
-        listaProdutos.innerHTML = '';
-        
-        if (produtos.length === 0) {
-            listaProdutos.innerHTML = '<li>Nenhum produto cadastrado</li>';
-            return;
-        }
-
-        produtos.forEach(produto => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <strong>${produto.nome}</strong> - 
-                Valor: R$${produto.valor.toFixed(2)} - 
-                Saldo: ${produto.saldo} - 
-                Mínimo: ${produto.saldoMin}
-            `;
-            let btnDeletar= document.createElement("button")
-            btnDeletar.textContent = "Deletar"
-            btnDeletar.onclick= () => {
-                deletarProduto(produto.idProduto);
-            }
-            listaProdutos.appendChild(li);
+async function carregarProdutos() {
+    try {
+        const response = await fetch(API_URL + "/buscar", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
         });
-    }
+        
+        let data = await response.json()
 
+        let lista = document.getElementById("listaProdutos")
+        lista.innerHTML = "";
+        data.forEach(produto => {
+            let item = document.createElement("li")
+            item.textContent = `ID: ${produto.id} - ${produto.nome} - R$ ${produto.valor} - Saldo: ${produto.saldo} - Saldo Mínimo: ${produto.saldoMinimo}`
+            
+            let btnDeletar = document.createElement("button")
+            btnDeletar.textContent = "Deletar"
+            btnDeletar.onclick = function(){
+                deletarProduto(produto.id)
+            }
+            item.appendChild(btnDeletar)
+
+            let btnAtulizar = document.createElement("button")
+            btnAtulizar.textContent = "Atualizar"
+            btnAtulizar.onclick = function(){
+                window.location.href = `indexPut.html?id=${produto.idProduto}`
+            }
+            item.appendChild(btnAtulizar)
+            
+            lista.appendChild(item)
+        })
+    } catch (error) {
+        console.error('Erro:', error);
+        listaProdutos.innerHTML = '<li>Erro ao carregar produtos</li>';
+    }
+}
+
+
+    async function deletarProduto(id) {
+        if (confirm("Tem certeza que deseja deletar esse produto?")){
+            try{
+                let response = await fetch(`${API_URL}/deletar/${id}`, {
+                    method: 'DELETE',
+                    headers: {'Content-Type': 'application/json'},
+                });
+
+                if (!response.ok){
+                    alert("Erro do back-end"+response.status)
+                }
+
+              alert("Produto deletado com sucesso!");
+                    carregarProdutos();
+                } catch (error) {
+                    alert("Erro na requisição: " + error.message)
+        }
+    }
+}
+     
+
+
+
+document.addEventListener("DOMContentLoaded", ()=>{
+    document.getElementById("produtoForm").addEventListener("submit", enviarProduto);
+    document.getElementById("carregarBtn").addEventListener("click", carregarProdutos);
 });
