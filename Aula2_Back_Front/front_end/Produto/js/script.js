@@ -25,12 +25,15 @@ async function enviarProduto(event) {
 
         let data = await response.json()
    
-        alert("Sucesso: "+JSON.stringify(data));
+        alert("Sucesso: "+ data.nome);
         carregarProdutos();
+        console.log(saldoMin.value)
+        
         nome.value = "";
         valor.value = "";
         saldo.value = "";
         saldoMin.value = "";
+
     } catch (error){
         alert("Erro na requisição: "+error.message)
     }
@@ -52,7 +55,7 @@ async function carregarProdutos() {
         lista.innerHTML = "";
         data.forEach(produto => {
             let item = document.createElement("li")
-            item.textContent = `ID: ${produto.id} - ${produto.nome} - R$ ${produto.valor} - Saldo: ${produto.saldo} - Saldo Mínimo: ${produto.saldoMinimo}`
+            item.textContent = `ID: ${produto.id} - ${produto.nome} - R$ ${produto.valor} - Saldo: ${produto.saldo} - Saldo Mínimo: ${produto.saldoMin}`
             
             let btnDeletar = document.createElement("button")
             btnDeletar.textContent = "Deletar"
@@ -64,7 +67,7 @@ async function carregarProdutos() {
             let btnAtulizar = document.createElement("button")
             btnAtulizar.textContent = "Atualizar"
             btnAtulizar.onclick = function(){
-                window.location.href = `indexPut.html?id=${produto.idProduto}`
+                window.location.href = `indexPut.html?id=${produto.id}`
             }
             item.appendChild(btnAtulizar)
             

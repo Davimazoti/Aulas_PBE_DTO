@@ -43,7 +43,7 @@ public class ProdutoController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/atualizar/{id}")
     public ResponseEntity<ProdutoDTO> update(@PathVariable Long id, @RequestBody ProdutoDTO produtoDTO){
         Optional<ProdutoDTO> produtoDTOOptional = produtoService.updateProduto(id, produtoDTO);
         if (produtoDTOOptional.isPresent()){
